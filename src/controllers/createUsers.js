@@ -1,11 +1,12 @@
-const { prismaClient } = require('../model/prismaClient');
+const { prismaClient } = require("../model/prismaClient");
 const bcrypt = require("bcrypt");
+const { v4: uuidv4 } = require('uuid');
 
 class createUsers {
   async createUsers(req, res) {
     try {
-      const { name, email, password, admin } = req.body;
-      
+      const { name, email, password, team, admin } = req.body;
+
       const salt = bcrypt.genSaltSync(10);
       const hash = bcrypt.hashSync(password, salt);
 
@@ -23,10 +24,39 @@ class createUsers {
             name,
             email,
             password: hash,
-            admin
+            team: team,
+            admin,
           },
         });
-        return res.status(201).json(users);
+        const getName = await prismaClient.users.findMany({
+          where: {
+            email: email,
+          }
+        })
+        const classification = await prismaClient.classification.create({
+          data: {
+            team: team,
+            player: name,
+            J: 0,
+            P: 0,
+            V: 0,
+            E: 0,
+            D: 0,
+            GP: 0,
+            GC: 0,
+            SG: 0,
+            name: getName[0].name,
+          },
+        });
+        const user = await prismaClient.users.findMany({
+          where: {
+            email: email,
+          },
+          include: {
+            classifications: true,
+          },
+        });
+        return res.status(201).json(user);
       }
     } catch (error) {
       console.log(error);

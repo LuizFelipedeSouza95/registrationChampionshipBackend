@@ -3,12 +3,13 @@ const { prismaClient } = require("../model/prismaClient");
 class classifications {
   async classifications(req, res) {
     try {
-      const { time, jogador/* , P, J, V, E, D, GP, GC, SG */ } = req.body;
+      const { team, player } = req.body;
 
-      const classification = await prismaClient.tableClassification.create({
+      const name = player
+      const classification = await prismaClient.classification.create({
         data: {
-          time,
-          jogador,
+          team,
+          player,
           J: 0,
           P: 0,
           V: 0,
@@ -17,8 +18,10 @@ class classifications {
           GP: 0,
           GC: 0,
           SG: 0,
+          name
         },
       });
+      
 
       return res.status(201).json(classification);
     } catch (error) {

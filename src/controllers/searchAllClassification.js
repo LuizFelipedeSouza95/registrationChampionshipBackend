@@ -2,7 +2,7 @@ const { prismaClient } = require('../model/prismaClient');
 
 class searchAllClassification {
   async searchAllClassification(req, res) {
-    const classification = await prismaClient.tableClassification.findMany({
+    const classification = await prismaClient.classification.findMany({
       orderBy: [
         {
           P: 'desc'

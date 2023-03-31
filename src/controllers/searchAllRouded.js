@@ -1,12 +1,12 @@
-const { prismaClient } = require('../model/prismaClient');
+const { prismaClient } = require("../model/prismaClient");
 
 class searchAllRouded {
   async searchAllRouded(req, res) {
-    const Rouded = await prismaClient.roudeds.findMany();
+    const Rouded = await prismaClient.round.findMany();
     return Rouded.length > 0
       ? res.status(200).json(Rouded)
       : res.status(204).send();
   }
 }
 
-module.exports = { searchAllRouded }
+module.exports = { searchAllRouded };

@@ -2,11 +2,10 @@ const { prismaClient } = require("../model/prismaClient");
 
 class updatedTableRouded {
   async updatedTableRouded(req, res) {
-    const { rouded, homePlayer, scoreHome, visitingPlayer, scoreVisiting } =
-      req.body;
+    const { roundNumber, homePlayer, scoreHome, visitingPlayer, scoreVisiting } = req.body;
 
-    const game = await prismaClient.roudeds.findMany({
-      where: { rouded: rouded },
+    const game = await prismaClient.round.findMany({
+      where: { roundNumber: roundNumber },
     });
 
     const filterPlayer = game.filter(function (jogo) {
@@ -15,7 +14,7 @@ class updatedTableRouded {
       );
     });
 
-    const updatedGame = await prismaClient.roudeds.update({
+    const updatedGame = await prismaClient.round.update({
       where: { id: filterPlayer[0].id },
       data: {
         scoreHome: scoreHome,

@@ -2,13 +2,13 @@ const { prismaClient } = require("../model/prismaClient");
 
 class updateTableClassification {
   async updateTableClassification(req, res) {
-    const { jogador1, time1, gols1, jogador2, time2, gols2 } = req.body;
+    const { player1, gols1, player2, gols2 } = req.body;
 
-    const team1 = await prismaClient.tableClassification.findMany({
-      where: { jogador: jogador1 /* , time: time1  */ },
+    const team1 = await prismaClient.classification.findMany({
+      where: { player: player1 },
     });
-    const team2 = await prismaClient.tableClassification.findMany({
-      where: { jogador: jogador2 /* , time: time2 */ },
+    const team2 = await prismaClient.classification.findMany({
+      where: { player: player2 },
     });
 
     // Atualiza os valores para o time 1
@@ -37,7 +37,7 @@ class updateTableClassification {
     team2[0].SG = team2[0].GP - team2[0].GC;
 
     // Salva as alterações na tabela tableClassification
-    const updatedTeam1 = await prismaClient.tableClassification.update({
+    const updatedTeam1 = await prismaClient.classification.update({
       where: { id: team1[0].id },
       data: {
         time: team1[0].time,
@@ -51,7 +51,7 @@ class updateTableClassification {
       },
     });
 
-    const updatedTeam2 = await prismaClient.tableClassification.update({
+    const updatedTeam2 = await prismaClient.classification.update({
       where: { id: team2[0].id },
       data: {
         time: team2[0].time,
@@ -66,10 +66,10 @@ class updateTableClassification {
     });
 
     const updated = {
-      jogador1: updatedTeam1,
-      jogador2: updatedTeam2
-    }
-    
+      player1: updatedTeam1,
+      player2: updatedTeam2,
+    };
+
     //console.log(updatedTeam1, updatedTeam2);
     return res.status(200).json(updated);
   }
