@@ -5,6 +5,7 @@ class searchAllUsers {
     const Users = await prismaClient.users.findMany({
       include: {
         classifications: true,
+        teamUser: true
       },
     });
     return Users.length > 0

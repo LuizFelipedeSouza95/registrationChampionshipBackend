@@ -10,6 +10,7 @@ class createUsers {
       const salt = bcrypt.genSaltSync(10);
       const hash = bcrypt.hashSync(password, salt);
 
+
       const getEmail = await prismaClient.users.findFirst({
         where: {
           email: email,
@@ -19,6 +20,17 @@ class createUsers {
       if (getEmail) {
         return res.status(409).json({ message: "Email Already exists!" });
       } else {
+
+        const getUserName = await prismaClient.users.findFirst({
+          where: {
+            name: name,
+          },
+        });
+
+        if (getUserName) {
+          return res.status(409).json({ message: "Username already exists!" });
+        } 
+
         const users = await prismaClient.users.create({
           data: {
             name,
@@ -33,10 +45,15 @@ class createUsers {
             email: email,
           }
         })
+        const getNameTeam = await prismaClient.teams.findMany({
+          where: {
+            id: team
+          }
+        });
         const classification = await prismaClient.classification.create({
           data: {
             team: team,
-            player: name,
+            teamPlayer: getNameTeam[0].name,
             J: 0,
             P: 0,
             V: 0,
@@ -48,12 +65,22 @@ class createUsers {
             name: getName[0].name,
           },
         });
+        const updatedTeam = await prismaClient.teams.update({
+          where: {
+            id: team,
+          },
+          data: {
+            select: true,
+            nameUser: name
+          },
+        });
         const user = await prismaClient.users.findMany({
           where: {
             email: email,
           },
           include: {
             classifications: true,
+            teamUser: true
           },
         });
         return res.status(201).json(user);

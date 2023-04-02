@@ -10,7 +10,7 @@ class updatedTableRouded {
 
     const filterPlayer = game.filter(function (jogo) {
       return (
-        jogo.visitingPlayer === homePlayer || jogo.homePlayer === homePlayer
+        jogo.visitingPlayers === homePlayer || jogo.homePlayer === homePlayer
       );
     });
 

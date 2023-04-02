@@ -5,11 +5,16 @@ class classifications {
     try {
       const { team, player } = req.body;
 
-      const name = player
+      const getNameTeam = await prismaClient.teams.findMany({
+        where: {
+          id: team
+        }
+      });
+
       const classification = await prismaClient.classification.create({
         data: {
-          team,
-          player,
+          team: team,
+          teamPlayer: getNameTeam[0].name,
           J: 0,
           P: 0,
           V: 0,
@@ -18,10 +23,9 @@ class classifications {
           GP: 0,
           GC: 0,
           SG: 0,
-          name
+          name: player
         },
       });
-      
 
       return res.status(201).json(classification);
     } catch (error) {

@@ -8,15 +8,16 @@ datasource db {
 }
 
 model Users {
-  name            String             @id
-  email           String              @unique            
+  name            String              @id
+  email           String              @unique
   password        String
   createdAt       DateTime            @default(now())
   admin           Boolean
-  team            String
+  team            Int                 @unique
   updatedAt       DateTime            @updatedAt
   deletedAt       DateTime?
   classifications Classification[]
+  teamUser        Teams[]
 }
 
 model Round {
@@ -33,8 +34,8 @@ model Round {
 
 model Classification {
   id        Int     @id @default(autoincrement())
-  player    String
-  team      String
+  teamPlayer    String
+  team      Int
   J         Int     @default(0)
   P         Int     @default(0)
   V         Int     @default(0)
@@ -50,4 +51,7 @@ model Classification {
 model Teams {
   id        Int     @id @default(autoincrement())
   name      String
+  select    Boolean? @default(false)
+  nameUser  String?
+  user      Users?  @relation(fields: [nameUser], references: [name])
 }
