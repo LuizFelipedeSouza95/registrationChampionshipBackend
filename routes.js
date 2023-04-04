@@ -32,9 +32,7 @@ const searchAllTeam = new searchAllTeams()
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "./views/pages"));
 
-
-
-router.post("/updatedGameRouded", updatedTableRoudeds.updatedTableRouded)
+router.post("/updatedGameRounds", updatedTableRoudeds.updatedTableRouded)
 router.get("/searchAllRouded", searchAllRoudeds.searchAllRouded)
 router.post("/createRouded", createRouded.createRoudeds)
 router.post("/createUser", createUser.createUsers.bind(createUser));

@@ -1,6 +1,6 @@
 const { prismaClient } = require("../model/prismaClient");
 const bcrypt = require("bcrypt");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
 class createUsers {
   async createUsers(req, res) {
@@ -9,7 +9,6 @@ class createUsers {
 
       const salt = bcrypt.genSaltSync(10);
       const hash = bcrypt.hashSync(password, salt);
-
 
       const getEmail = await prismaClient.users.findFirst({
         where: {
@@ -20,7 +19,6 @@ class createUsers {
       if (getEmail) {
         return res.status(409).json({ message: "Email Already exists!" });
       } else {
-
         const getUserName = await prismaClient.users.findFirst({
           where: {
             name: name,
@@ -29,26 +27,27 @@ class createUsers {
 
         if (getUserName) {
           return res.status(409).json({ message: "Username already exists!" });
-        } 
+        }
 
+        const getNameTeam = await prismaClient.teams.findMany({
+          where: {
+            id: team,
+          },
+        });
         const users = await prismaClient.users.create({
           data: {
             name,
             email,
             password: hash,
             team: team,
+            teamName: getNameTeam[0].name,
             admin,
           },
         });
         const getName = await prismaClient.users.findMany({
           where: {
             email: email,
-          }
-        })
-        const getNameTeam = await prismaClient.teams.findMany({
-          where: {
-            id: team
-          }
+          },
         });
         const classification = await prismaClient.classification.create({
           data: {
@@ -65,22 +64,14 @@ class createUsers {
             name: getName[0].name,
           },
         });
-        const updatedTeam = await prismaClient.teams.update({
-          where: {
-            id: team,
-          },
-          data: {
-            select: true,
-            nameUser: name
-          },
-        });
         const user = await prismaClient.users.findMany({
           where: {
             email: email,
           },
           include: {
             classifications: true,
-            teamUser: true
+            roundsHome: true,
+            roundVisiting: true,
           },
         });
         return res.status(201).json(user);

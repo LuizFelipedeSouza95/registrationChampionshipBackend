@@ -22,6 +22,7 @@ class createRoudeds {
               scoreHome: 0,
               scoreVisiting: 0,
               visitingPlayers: jogo.fora,
+              disabledInputs: false
             },
           });
         }

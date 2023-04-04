@@ -21,7 +21,8 @@ class searchUser {
         },
         include: {
           classifications: true,
-          teamUser: true
+          roundsHome: true,
+          roundVisiting: true,
         },
       });
 

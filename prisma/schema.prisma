@@ -8,50 +8,53 @@ datasource db {
 }
 
 model Users {
-  name            String              @id
-  email           String              @unique
+  name            String           @id
+  email           String           @unique
   password        String
-  createdAt       DateTime            @default(now())
+  createdAt       DateTime         @default(now())
   admin           Boolean
-  team            Int                 @unique
-  updatedAt       DateTime            @updatedAt
+  team            Int
+  teamName        String
+  updatedAt       DateTime         @updatedAt
   deletedAt       DateTime?
   classifications Classification[]
-  teamUser        Teams[]
+  roundsHome      Round[]          @relation("playerRounds")
+  roundVisiting   Round[]          @relation("visitingRounds")
 }
 
 model Round {
-  id                  Int         @id @default(autoincrement())
-  roundNumber         Int
-  homePlayer          String
-  scoreHome           Int
-  scoreVisiting       Int
-  visitingPlayers     String
-  createdAt           DateTime   @default(now())
-  updatedAt           DateTime   @updatedAt
-  deletedAt           DateTime?
+  id              Int       @id @default(autoincrement())
+  roundNumber     Int
+  homePlayer      String
+  scoreHome       Int
+  scoreVisiting   Int
+  visitingPlayers String
+  disabledInputs  Boolean
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+  roundHome       Users     @relation("playerRounds", fields: [homePlayer], references: [name])
+  roundVisiting   Users     @relation("visitingRounds", fields: [visitingPlayers], references: [name])
 }
 
 model Classification {
-  id        Int     @id @default(autoincrement())
-  teamPlayer    String
-  team      Int
-  J         Int     @default(0)
-  P         Int     @default(0)
-  V         Int     @default(0)
-  E         Int     @default(0)
-  D         Int     @default(0)
-  GP        Int     @default(0)
-  GC        Int     @default(0)
-  SG        Int     @default(0)
-  name      String
-  user      Users   @relation(fields: [name], references: [name])
+  id         Int    @id @default(autoincrement())
+  teamPlayer String
+  team       Int
+  J          Int    @default(0)
+  P          Int    @default(0)
+  V          Int    @default(0)
+  E          Int    @default(0)
+  D          Int    @default(0)
+  GP         Int    @default(0)
+  GC         Int    @default(0)
+  SG         Int    @default(0)
+  name       String
+  user       Users  @relation(fields: [name], references: [name])
 }
 
 model Teams {
-  id        Int     @id @default(autoincrement())
-  name      String
-  select    Boolean? @default(false)
-  nameUser  String?
-  user      Users?  @relation(fields: [nameUser], references: [name])
+  id     Int      @id @default(autoincrement())
+  name   String
+  select Boolean? @default(false)
 }
